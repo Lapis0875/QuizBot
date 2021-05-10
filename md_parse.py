@@ -1,16 +1,23 @@
 import json
 from enum import Enum
 from pprint import pprint
-from typing import List, Tuple, Final
+from typing import List, Tuple, Final, Union
 
 from constants import NUMBER_EMOJIS, NUMBER_EMOJI_LENGTH, QuizDataKeys
 from type_hints import JSON
 
 
 # Markdown Quiz Text Parsers
-def parse_question(line: str) -> Tuple[str, int]:
-    print(f'parse_question > {line}')
-    question, answer = line[3:-4], int(line[-1])
+def parse_question(line: str) -> Tuple[str, Union[int, List[int]]]:
+    print(f'parse_question > "{line}"')
+    question, answer = line[3:-4], line[line.rfind(':')+1:].replace(' ', '')
+    print(answer)
+    if answer.isdigit():
+        answer = int(answer)
+    elif ',' in answer:
+        answer = [int(d) for d in answer.split(',')]
+    else:
+        raise ValueError('Invalid Answer Syntax!')
     print(f'question={question}&answer={answer}')
     return question, answer
 
